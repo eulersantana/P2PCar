@@ -1,5 +1,6 @@
-import processing.net.*; 
-Client myClient; 
+
+Cliente2 myClient; 
+
 int dataIn = 202;
 
 PImage img;  // Declare variable "a" of type PImage
@@ -18,7 +19,8 @@ void setup() {
   // to load successfully
   // Load the image into the program  
   img = loadImage("../rect2985.png");
-  myClient = new Client(this, "127.0.0.1", 5204); 
+  myClient = new Cliente2("127.0.0.1", 5204); 
+ 
   
   
   
@@ -79,8 +81,7 @@ void draw() {
   if(pX > height){
     pX = height/2;
   }
-  if (myClient.available() > 0) { 
-    dataIn = myClient.read(); 
-  } 
+  myClient.cliente();
+ 
   desenhaCarro3(dataIn);
 }

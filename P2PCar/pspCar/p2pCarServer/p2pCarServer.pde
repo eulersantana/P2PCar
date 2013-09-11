@@ -1,5 +1,5 @@
-import processing.net.*;
-Server myServer;
+
+Servidor2 myServer;
 int val = 202;
 
 PImage img;  // Declare variable "a" of type PImage
@@ -7,8 +7,7 @@ float posX = 330;
 float poX  = 330;
 float pX   = 330;
 int carroX = 202;
-int value = 0;
-
+int value = 2;
 
 
 void setup() {
@@ -18,9 +17,9 @@ void setup() {
   // to load successfully
   // Load the image into the program  
   img = loadImage("../../rect2985.png");
- myServer = new Server(this, 5204); 
+ myServer = new Servidor2("127.0.0.1", 5204); 
   
-  
+  myServer.Servidor();
   
   }
 
@@ -38,7 +37,7 @@ void desenhaCarro3(float x){
 
 void draw() {
   // Displays the image at its actual size at point (0,0)
-  
+
    int s = second();
    val = carroX;
    background(500);
@@ -79,6 +78,6 @@ void draw() {
   if(pX > height){
     pX = height/2;
   }
-  myServer.write(val);
+  
   
 }
