@@ -1,67 +1,120 @@
-import java.io.BufferedReader;  
-import java.io.IOException;  
-import java.io.InputStreamReader;  
+
+import java.io.*;  
 import java.net.ServerSocket;  
-import java.net.Socket;  
-  
-public class Servidor2 {  
-   private String ip;
-    private int porta;
-
-    public Servidor2(String ip, int porta){
-        this.ip     = ip;
-        this.porta  = porta;
-    }
+import java.net.Socket;
+import java.lang.reflect.*;  
+import java.net.*;
 
   
-    public void Servidor() {  
-          
-        //Declaro o ServerSocket  
-        ServerSocket serv=null;   
-          
-        //Declaro o Socket de comunicação  
-        Socket s= null;  
-          
-        //Declaro o leitor para a entrada de dados  
-        BufferedReader entrada=null;  
-                  
-        try{  
-              
-            //Cria o ServerSocket na porta 7000 se estiver disponível  
-            serv = new ServerSocket(porta);  
-          
-            //Aguarda uma conexão na porta especificada e cria retorna o socket que irá comunicar com o cliente  
-            s = serv.accept();  
-              
-            //Cria um BufferedReader para o canal da stream de entrada de dados do socket s  
-            entrada = new BufferedReader(new InputStreamReader(s.getInputStream()));  
-              
-            //Aguarda por algum dado e imprime a linha recebida quando recebe  
-            System.out.println("Euler"+ entrada.readLine());   
-              
-        //trata possíveis excessões de input/output. Note que as excessões são as mesmas utilizadas para as classes de java.io    
-        }catch(IOException e){  
-          
-            //Imprime uma notificação na saída padrão caso haja algo errado.  
-            System.out.println("Algum problema ocorreu para criar ou receber o socket.");  
-          
-        }finally{  
-              
-            try{  
-                  
-                //Encerro o socket de comunicação  
-                s.close();  
-                  
-                //Encerro o ServerSocket  
-                serv.close();  
-                  
-            }catch(IOException e){  
-            }  
-        }  
-      
-          
-          
-          
-          
+public class Servidor2 extends Thread{  
+   
+    
+    ServerSocket server;
+    int porta;
+    Cliente2[] clientes;
+    int contCliente = 0;
+    Socket socket;
+    String nome;
+    int tempo = 10;  
+    PrintStream ps;               //Stream de saida de dados 
+   // BufferedReader entrada;       //Leitor para a entrada de dados
+   
+    public Servidor2(Socket socket){
+       this.socket = socket;
     }  
+   
+    public Servidor2(int porta) {  
+          
+         this.porta = porta; 
+                  
+            try{
+ 
+                //Cria o ServerSocket na porta 7000 se estiver disponível  
+                server = new ServerSocket(this.porta);
+                //clientes = new Cliente2[2];
+                 
+              while(true){ //Aguarda uma conexão na porta especificada e cria retorna o socket que irá comunicar com o cliente  
+                  Socket socket2 = server.accept();
+                  //ps = new PrintStream(socket.getOutputStream()); 
+                  
+                  /*Cliente2 client = new Cliente2(socket);
+  
+                  if(clientes.length < 2){
+                      clientes[contCliente] = client;
+                      contCliente++;
+                  }*/
+                // System.out.println("Construtor");
+                Thread thread = new Servidor2(socket2);
+                thread.start();
+                //Aguarda uma conexão na porta especificada e cria retorna o socket que irá comunicar com o cliente  
+              }
+                  
+                
+                  
+            //trata possíveis excessões de input/output.   
+            }catch (IOException e) {
+              e.printStackTrace();
+             
+              System.out.println(e.getMessage());
+            }
+            
+            
+    } // fim construtor
+    
+   void inicia(){
+      try{
+ 
+                 
+              while(true){ //Aguarda uma conexão na porta especificada e cria retorna o socket que irá comunicar com o cliente  
+                  Socket socket2 = server.accept();
+                  Thread thread = new Servidor2(socket2);
+                  thread.start();
+                //Aguarda uma conexão na porta especificada e cria retorna o socket que irá comunicar com o cliente  
+              }
+      }catch (IOException e) {
+              e.printStackTrace();
+             
+              System.out.println(e.getMessage());
+            }
+   
+   }
+    public void run(){
+        
+     
+            try{   
+                 
+               BufferedReader entrada =
+                new BufferedReader(new InputStreamReader(this.socket.getInputStream()));
+             
+                PrintStream saida = new PrintStream(this.socket.getOutputStream());
+                // recebe o nome do cliente
+                this.nome = entrada.readLine();
+                
+              
+                
+            }catch (Exception e) {
+                e.printStackTrace();
+                
+            }
+      
+    }
+        
+    /*public void lerNome(Socket socket){
+        
+        try{
+              //Cria um BufferedReader para o canal da stream de entrada de dados do socket  
+              entrada = new BufferedReader(new InputStreamReader(socket.getInputStream()));  
+              
+              //Aguarda por algum dado e imprime a linha recebida quando recebe  
+              this.nome = entrada.readLine();
+            
+              
+              System.out.println("oi"+this.nome);
+        }catch (IOException e) {
+            e.printStackTrace();
+            thread = null;
+            System.out.println(e);
+        }
+    }*/  
+      
 }
